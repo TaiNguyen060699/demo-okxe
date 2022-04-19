@@ -6,6 +6,9 @@ export default createStore({
     email: '',
     status: '',
     token: localStorage.getItem('token') || '',
+    listProduct: [],
+    currentPage: 1, 
+    totalPage: 0
   },
   getters: {
     isLoggedIn: state => !!state.token,
@@ -31,6 +34,14 @@ export default createStore({
       state.status = ''
       state.token = ''
     },
+
+    listProduct(state, data) {
+      state.listProduct = data
+    },
+
+    // isActivePage(state, data) {
+    //   state.currentPage = data
+    // }
   },
   actions: {
     doLogin({ commit }, email) {
@@ -54,7 +65,7 @@ export default createStore({
       })
     },
 
-    doLogout({commit}) {
+    doLogout({ commit }) {
       return new Promise((resolve) => {
         commit('logout');
         localStorage.removeItem('token')
@@ -62,7 +73,29 @@ export default createStore({
         localStorage.removeItem('password')
         resolve()
       })
-    }
+    },
+
+    handleLoadProduct({ commit, state }) {
+      const token = state.token
+      const currentPage = 1
+      axios.get(`http://dev.okxe.vn:9060/api/v2/products?page=${currentPage}&sort_by=updated_at&order_by=desc&count=50`,{
+        headers: {"Authorization" : `Bearer ${token}`}
+      })
+      .then(res => {
+        const data  = res.data.data;
+        const totalPage  = res.data.total;
+        console.log(Array.from(
+          { length: totalPage / 50 },
+          (_, index) => index + 1
+        )),
+        commit('listProduct', data, {totalPage: totalPage })
+      }).catch(err => console.log(err))
+    },
+
+    // handleActivePage({commit}, currentPage = 1) {
+    //   console.log(currentPage);
+    //   commit('isActivePage', currentPage)
+    // }
   },
   modules: {
   }
