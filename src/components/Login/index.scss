@@ -1,0 +1,180 @@
+.v-main {
+  display: flex;
+  flex: 1 0 auto;
+  max-width: 100%;
+  transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &__wrap {
+    flex: 1 1 auto;
+    max-width: 100%;
+    position: relative;
+  }
+
+  .container {
+    width: 100%;
+    padding: 12px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-page__container {
+    width: 330px;
+    text-align: center;
+    position: relative;
+  }
+}
+
+.v-input {
+  align-items: flex-start;
+  display: flex;
+  flex: 1 1 auto;
+  font-size: 16px;
+  letter-spacing: normal;
+  max-width: 100%;
+  text-align: left;
+
+  &__control {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    min-width: 0;
+    width: 100%;
+  }
+
+  &__slot {
+    align-items: center;
+    color: inherit;
+    display: flex;
+    margin-bottom: 8px;
+    min-height: inherit;
+    position: relative;
+    transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+    width: 100%;
+
+    &::before {
+      content: '';
+      bottom: -1px;
+      left: 0;
+      position: absolute;
+      transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+      width: 100%;
+    }
+
+    ::placeholder {
+      font-size: 12px;
+    }
+  }
+}
+
+.v-text-field {
+  padding-top: 12px;
+  margin-top: 4px;
+
+  &__slot {
+    display: flex;
+    flex: 1 1 auto;
+    position: relative;
+  }
+
+  &__detail {
+    display: flex;
+    flex: 1 0 auto;
+    max-width: 100%;
+    min-height: 14px;
+    overflow: hidden;
+  }
+}
+
+.v-text-field .v-label {
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  top: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.v-text-field input {
+  flex: 1 1 auto;
+  line-height: 20px;
+  padding: 8px 0;
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+  max-height: 32px;
+}
+
+.v-btn--block {
+  display: flex;
+  flex: 1 0 auto;
+  min-width: 100% !important;
+}
+
+.v-btn {
+  padding: 15px;
+  align-items: center;
+  font-weight: 500;
+  letter-spacing: 0.0892857143em;
+  justify-content: center;
+  outline: 0;
+  position: relative;
+  text-decoration: none;
+  text-indent: 0.0892857143em;
+  text-transform: uppercase;
+  transition-duration: 0.28s;
+  transition-property: box-shadow, transform, opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  color: white;
+  background-color: #00bcc3 !important;
+  border-color: #00bcc3 !important;
+
+  &:focus {
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+  }
+
+  &::before {
+    content: '';
+    background-color: currentColor;
+    border-radius: inherit;
+    bottom: 0;
+    color: inherit;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+  }
+
+  &__content {
+    align-items: center;
+    color: inherit;
+    display: flex;
+    flex: 1 0 auto;
+    justify-content: inherit;
+    line-height: normal;
+    position: relative;
+    transition: inherit;
+    transition-property: opacity;
+  }
+}
+
+.login-page__hint {
+  color: #aaa;
+  margin-top: 24px;
+  font-weight: 300;
+  font-size: 12px;
+  text-align: left;
+}
