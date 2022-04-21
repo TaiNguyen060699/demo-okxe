@@ -37,7 +37,7 @@ export default {
   },
 
   computed: {
-    ...mapState(["listProduct", "totalPage", "currentPage"]),
+    ...mapState(["product", "totalPage", "currentPage"]),
   },
 };
 </script>

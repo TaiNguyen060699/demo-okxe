@@ -6,9 +6,13 @@ export default createStore({
     email: '',
     status: '',
     token: localStorage.getItem('token') || '',
-    listProduct: [],
-    currentPage: 1, 
-    totalPage: 0
+    product: [],
+    currentPage: 1,
+    totalPage: 0,
+    brands: [],
+    model: [],
+    trim: [],
+    id: ''
   },
   getters: {
     isLoggedIn: state => !!state.token,
@@ -35,16 +39,33 @@ export default createStore({
       state.token = ''
     },
 
-    listProduct(state, listProduct) {
-      state.listProduct = listProduct 
+    getProduct(state, product) {
+      state.product = product
     },
 
-    totalPage(state, totalPage) {
+    getTotalPage(state, totalPage) {
       state.totalPage = totalPage
     },
 
     isActivePage(state, data) {
       state.currentPage = data
+    },
+
+    getBrands(state, data) {
+      state.brands = data
+    },
+
+    getModel(state, data) {
+      state.model = data
+    },
+
+    getTrim(state, data) {
+      state.trim = data
+    },
+
+    setID(state, data) {
+      state.id = data
+      state.product = data
     }
   },
 
@@ -80,21 +101,57 @@ export default createStore({
       })
     },
 
-    handleLoadProduct({ commit, state}) {
+    handleLoadProduct({ commit, state }) {
       const token = state.token
-      axios.get(`http://dev.okxe.vn:9060/api/v2/products?page=${this.state.currentPage}&sort_by=updated_at&order_by=desc&count=50`,{
-        headers: {"Authorization" : `Bearer ${token}`}
+      axios.get(`http://dev.okxe.vn:9060/api/v2/products?page=${this.state.currentPage}&sort_by=updated_at&order_by=desc&count=50`, {
+        headers: { "Authorization": `Bearer ${token}` }
       })
-      .then(res => {
-        const data  = res.data.data;
-        const totalPage  = res.data.total;
-        commit('listProduct', data)
-        commit('totalPage', totalPage)
-      }).catch(err => console.log(err))
+        .then(res => {
+          const data = res.data.data;
+          const totalPage = res.data.total;
+          commit('getProduct', data)
+          commit('getTotalPage', totalPage)
+        }).catch(err => console.log(err))
     },
 
-    handleActivePage({commit}, currentPage = 1) {
+    handleActivePage({ commit }, currentPage = 1) {
       commit('isActivePage', currentPage)
+    },
+
+    handleLoadBrands({ commit, state }) {
+      const token = state.token
+      axios.get('http://dev.okxe.vn:9060/api/brands', {
+        headers: { "Authorization": `Bearer ${token}` }
+      })
+        .then(res => {
+          const data = res.data.data;
+          console.log(data)
+          commit('getBrands', data)
+        })
+        .catch(err => console.log(err))
+    },
+
+    handleLoadModel({ commit, state }) {
+      const token = state.token
+      axios.get(`http://dev.okxe.vn:9060/api/brands/${state.id}/models`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      })
+        .then(res => {
+          const data = res.data.data
+          commit('getModel', data)
+        }).catch(err => console.log(err))
+    },
+
+    handleSetID({ commit, state }, id) {
+      const token = state.token
+      commit('setID', id)
+      axios.get(`http://dev.okxe.vn:9060/api/v2/products?page=1&sort_by=updated_at&order_by=desc&brand_id=${id}&count=50`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      })
+        .then(res => {
+          const data = res.data.data
+          commit('getProduct', data)
+        }).catch(err => console.log(err))
     }
   },
   modules: {

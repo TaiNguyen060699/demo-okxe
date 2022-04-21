@@ -17,7 +17,7 @@
           </tr>
         </thead>
         <tbody class="v-data-table-body">
-          <tr v-for="(val, key) in listProduct" :key="key">
+          <tr v-for="(val, key) in product" :key="key">
             <td>
               <div>
                 <span>{{ val.id }}</span>
@@ -189,13 +189,7 @@ export default {
   },
 
   computed: {
-    ...mapState(["listProduct", "totalPage", "currentPage"]),
-    // total() {
-    //   return Array.from(
-    //     { length: this.totalPage / 50 },
-    //     (_, index) => index + 1
-    //   );
-    // },
+    ...mapState(["product", "totalPage", "currentPage"]),
     total() {
       return Math.ceil(this.totalPage / 50);
     },
