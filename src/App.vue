@@ -1,17 +1,18 @@
 <template>
-  <router-view/>
+  <Header />
+  <router-view />
 </template>
 
 <script>
-
+import Header from "./components/Header.vue";
 export default {
- components: {
- }
-}
+  components: {
+    Header,
+  },
+};
 </script>
 
 <style lang="scss">
-
 * {
   padding: 0;
   margin: 0;
@@ -23,6 +24,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 #nav {
@@ -36,5 +40,14 @@ export default {
       color: #42b983;
     }
   }
+}
+
+.errors {
+  list-style: none;
+  color: red;
+  font-size: 12px;
+  overflow: hidden;
+  transition: width 2s;
+  transition-timing-function: cubic-bezier(0.1, 0.7, 1, 0.1);
 }
 </style>

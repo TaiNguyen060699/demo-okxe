@@ -1,84 +1,68 @@
 <template>
   <main class="v-main" data-booted="true" style="padding: 80px 0px 0px">
     <div class="v-main__wrap">
-      <div
-        class="container container--fluid"
-        style="background-color: white; height: 100%"
-      >
+      <div class="container container--fluid" style="background-color: white; height: 100%">
         <div class="row align-center justify-center" style="height: 100%">
           <div class="login-page__container">
-            <img
-              src="http://dev.okxe.vn:1112/images/okxe-logo-v2.svg"
-              height="164"
-              width="164"
-            />
-            <form novalidate="novalidate" class="v-form">
-              <div
-                class="
+            <img src="http://dev.okxe.vn:1112/images/okxe-logo-v2.svg" height="164" width="164" />
+            <form novalidate="novalidate" class="v-form" @submit="checkForm">
+              <div class="
                   v-input
                   login__username-field
                   v-input--has-state
                   theme--light
                   v-text-field v-text-field--is-booted
                   error--text
-                "
-              >
+                ">
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <div class="v-text-field__slot">
-                      <input
-                        maxlength="50"
-                        id="input-19"
-                        type="text"
-                        placeholder="Enter your email"
-                        v-model="email"
-                      />
+                      <input maxlength="50" id="input-19" type="text" placeholder="Enter your email"
+                        v-model="email" @input="checkFormEmail" />
                     </div>
-                  </div>
-                  <div class="v-text-field__details">
-                    <div
-                      class="v-messages theme--light error--text"
-                      role="alert"
-                    >
-                      <!-- <div class="v-messages__wrapper">
-                        <div class="v-messages__message">Email is required</div>
-                      </div> -->
+                     <div class="v-text-field__details">
+                      <div class="v-messages theme--light error--text" role="alert">
+                        <div class="v-messages__wrapper" v-if="errors.length">
+                          <div 
+                            class="v-messages__message errors" 
+                            v-for="(error, key) in errors" :key="key"
+                          >
+                            {{error}}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <!-- <div class="v-counter theme--light">0 / 50</div> -->
                   </div>
                 </div>
               </div>
-              <div
-                class="
+              <div class="
                   v-input
                   login__password-field
                   theme--light
                   v-text-field v-text-field--is-booted
-                "
-              >
+                ">
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <div class="v-text-field__slot">
-                      <input
-                        maxlength="50"
-                        id="input-22"
-                        type="password"
-                        placeholder="Enter your password"
-                        v-model="password"
-                      />
+                      <input maxlength="50" id="input-22" type="password"
+                        placeholder="Enter your password" v-model="password" @input="checkFormPW"/>
                     </div>
-                  </div>
-                  <div class="v-text-field__details">
-                    <div class="v-messages theme--light">
-                      <div class="v-messages__wrapper"></div>
+                    <div class="v-text-field__details">
+                      <div class="v-messages theme--light error--text" role="alert">
+                        <div class="v-messages__wrapper" v-if="errors.length">
+                          <div 
+                            class="v-messages__message errors" 
+                            v-for="(error, key) in errorsPW" :key="key"
+                          >
+                            {{error}}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <!-- <div class="v-counter theme--light">0 / 50</div> -->
                   </div>
                 </div>
               </div>
-              <button
-                type="button"
-                class="
+              <button type="button" class="
                   mt-2
                   v-btn
                   v-btn--block
@@ -88,16 +72,13 @@
                   theme--dark
                   v-size--x-large
                   primary
-                "
-                @click="handleLogin"
-              >
+                " @click="handleLogin">
                 <span class="v-btn__content"><span> Login </span></span>
               </button>
             </form>
             <p class="login-page__hint">
               If you forget the password, please contract admin
             </p>
-            <!---->
           </div>
         </div>
       </div>
@@ -111,8 +92,10 @@ import { mapActions } from "vuex";
 export default {
   data() {
     return {
-      email: null,
-      password: null,
+      email: "",
+      password: "",
+      errors: "",
+      errorsPW: "",
     };
   },
 
@@ -131,8 +114,45 @@ export default {
           localStorage.setItem("email", data.email),
           localStorage.setItem("password", data.password)
         )
-        .then(() => this.$router.push("/admin"))
+        .then(() => this.$router.push("/admin/dashboard"))
         .catch((err) => console.log(err));
+    },
+
+    checkFormEmail(e) {
+      e.preventDefault();
+      this.errors = [];
+      if (!this.email) {
+        this.errors.push("Enter your Email.");
+      } else if (!this.validEmail(this.email)) {
+        this.errors.push("Email is not properly formatted");
+      }
+
+      if (!this.errors.length) {
+        return true;
+      }
+    },
+
+    checkFormPW(e) {
+      e.preventDefault();
+      this.errorsPW = [];
+
+      if (!this.password) {
+        this.errorsPW.push("Password is required");
+      } else if (this.password.length > 8 && this.password.length < 50) {
+        this.errorsPW.push("Min 8 characters and Max 50 characters");
+      }
+
+      if (!this.errorsPW.length) {
+        return true;
+      }
+    },
+
+    validEmail(email) {
+      return String(email)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
     },
   },
 };

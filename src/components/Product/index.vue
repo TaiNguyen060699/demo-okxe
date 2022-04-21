@@ -1,60 +1,18 @@
 <template>
-  <Header />
   <div class="row">
     <div class="col-md-2">
       <NavBar />
     </div>
     <div class="col-md-10">
+      <ProductManagement />
       <table>
         <thead class="v-data-table-header">
           <tr>
             <th class="text-center">
               <span>ID</span>
             </th>
-            <th>
-              <span>Picture</span>
-            </th>
-            <th>
-              <span>Subject</span>
-            </th>
-            <th>
-              <span>Product Type</span>
-            </th>
-            <th>
-              <span>Make</span>
-            </th>
-            <th>
-              <span>Model(Trim)</span>
-            </th>
-            <th>
-              <span>Category</span>
-            </th>
-            <th>
-              <span>Location</span>
-            </th>
-            <th>
-              <span>Release Year</span>
-            </th>
-            <th>
-              <span>Used Distance</span>
-            </th>
-            <th>
-              <span>Price(VND)</span>
-            </th>
-            <th>
-              <span>Registered Date</span>
-            </th>
-            <th>
-              <span>Last updated at</span>
-            </th>
-            <th>
-              <span>Status updated at</span>
-            </th>
-            <th>
-              <span>Status updated by</span>
-            </th>
-            <th>
-              <span>Status</span>
+            <th v-for="(val, key) in columns" :key="key">
+              <span> {{ val.value }} </span>
             </th>
           </tr>
         </thead>
@@ -74,26 +32,32 @@
               </div>
             </td>
             <td>
-              <div>
-                <span>{{ val.seller.name }}</span>
+              <div style="font-size: 14px">
+                <span style="font-weight: 700">{{ val.seller.name }}</span>
                 <p>{{ val.seller.type }}</p>
               </div>
             </td>
             <td>
               <div>
-                <span>{{ val.sales_status }}</span>
+                <button
+                  :class="[
+                    'v-btn__content used-status brand-product-page-btn',
+                    val.used_status === 'new' ? 'bg-blue' : 'bg-black',
+                  ]"
+                >
+                  <span class="v-btn__content">{{ val.used_status }}</span>
+                </button>
               </div>
             </td>
             <td>
-              <div>
+              <div class="d-flex flex-nowrap align-center">
                 <img :src="val.brand.logo" alt="" style="width: 36px" />
-                <span>{{ val.brand.name }}</span>
+                <span style="margin-left: 5px">{{ val.brand.name }}</span>
               </div>
             </td>
             <td>
-              <div>
-                <span>{{ val.id }}</span>
-              </div>
+              <div style="font-weight: bold">{{ val.model_name }}</div>
+              <div>{{ val.model_detail }}</div>
             </td>
             <td>
               <div>
@@ -101,8 +65,8 @@
               </div>
             </td>
             <td>
-              <div>
-                <span>{{ val.location }}</span>
+              <div style="text-align: center; font-size: 0.875rem">
+                {{ val.location }}
               </div>
             </td>
             <td>
@@ -112,7 +76,10 @@
             </td>
             <td>
               <div>
-                <span>{{ val.used_distance }} km</span>
+                <span
+                  >{{ val.used_distance
+                  }}<span style="font-weight: 600">㎞</span></span
+                >
               </div>
             </td>
             <td>
@@ -122,17 +89,17 @@
             </td>
             <td>
               <div>
-                <span>{{ val.created_at }}</span>
+                <span>{{ formatDate(val.created_at) }}</span>
               </div>
             </td>
             <td>
               <div>
-                <span>{{ val.status_latest_datetime }}</span>
+                <span>{{ formatDate(val.status_latest_datetime) }}</span>
               </div>
             </td>
             <td>
               <div>
-                <span>{{ val.updated_at }}</span>
+                <span>{{ formatDate(val.updated_at) }}</span>
               </div>
             </td>
             <td>
@@ -142,53 +109,104 @@
             </td>
             <td>
               <div>
-                <span>{{ val.sales_status }}</span>
+                <span 
+                  style="text-transform: capitalize;"
+                  :class="[
+                    val.sales_status === 'locked' ? 'text-orange': '',
+                    val.sales_status === 'sold' ? 'text-black': '',
+                    val.sales_status === 'deleted' ? 'text-red': '',
+                    val.sales_status === 'done' ? 'text-green': '',
+                    val.sales_status === 'in review' ? 'text-purple': ''
+                  ]"
+                >
+                  {{ val.sales_status }}
+                </span>
               </div>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="pagination">
-      <Pagination />
+    <div
+      class="container container--fluid"
+      style="display: flex; justify-content: center; padding-top: 25px"
+    >
+      <div class="pagination-custom text-center">
+        <nav class="page-item">
+          <Pagination @pageChanged="onclickPage" :pagess="total"> </Pagination>
+        </nav>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "vuex";
-
 import NavBar from "../NavBar/index.vue";
-import Header from "../Header.vue";
-import Pagination from '../Pagination.vue'
+import Pagination from "../Pagination/index.vue";
+import ProductManagement from "./ProductManagement.vue";
+import moment from 'moment'
 
 export default {
   data() {
     return {
-      token: localStorage.getItem("token"),
+      columns: [
+        { value: "Picture", key: "picture" },
+        { value: "Subject", key: "Subject" },
+        { value: "Product Type", key: "Product Type" },
+        { value: "Make", key: "id" },
+        { value: "Model(Trim)", key: "id" },
+        { value: "Category", key: "id" },
+        { value: "Location", key: "id" },
+        { value: "Release Year", key: "id" },
+        { value: "Used Distance", key: "id" },
+        { value: "Price(VND)", key: "id" },
+        { value: "Regitered Date", key: "id" },
+        { value: "Last updated at", key: "id" },
+        { value: "Status updated at", key: "id" },
+        { value: "Status updated by", key: "id" },
+        { value: "Status ", key: "id" },
+      ],
     };
   },
   components: {
-    Header,
     NavBar,
     Pagination,
+    ProductManagement,
   },
 
   methods: {
     ...mapActions(["handleLoadProduct", "handleActivePage"]),
+    onclickPage() {
+      this.handleLoadProduct();
+    },
+
+     formatDate: function (value) {
+      if(value) {
+         return moment(String(value)).format('DD.MM.YYYY hh:mm:ss')
+      }
+    }
   },
 
   computed: {
-    ...mapState(["listProduct", "totalPage"]),
+    ...mapState(["listProduct", "totalPage", "currentPage"]),
+    // total() {
+    //   return Array.from(
+    //     { length: this.totalPage / 50 },
+    //     (_, index) => index + 1
+    //   );
+    // },
+    total() {
+      return Math.ceil(this.totalPage / 50);
+    },
   },
 
-  created() {
+  mounted() {
     this.handleLoadProduct();
-    console.log(this.totalPage)
   },
 };
 </script>
 
 <style lang='scss'>
-@import './index.scss';
+@import "./index.scss";
 </style>

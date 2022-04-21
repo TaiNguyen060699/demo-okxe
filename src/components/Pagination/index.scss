@@ -1,0 +1,40 @@
+.pagination-custom {
+  height: 70px;
+  border-top: 1px solid #d4d4d4;
+}
+
+.v-pagination {
+  align-items: center;
+  display: inline-flex;
+  list-style-type: none;
+  justify-content: center;
+
+  li {
+    display: flex;
+    align-items: center;
+  }
+
+  &__navigation {
+    box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%);
+    border-radius: 4px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    height: 32px;
+    width: 32px;
+    margin: 0.3rem 10px;
+  }
+}
+
+.v-card {
+  border-width: thin;
+  display: block;
+  max-width: 100%;
+  outline: none;
+  text-decoration: none;
+  transition-property: box-shadow,opacity;
+  word-wrap: break-word;
+  position: relative;
+  white-space: normal;
+}

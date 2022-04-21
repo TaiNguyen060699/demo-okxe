@@ -1,9 +1,10 @@
 .v-data-table-header {
   height: 50px;
+  border-top: 1px solid gray;
 
   tr th {
     user-select: none;
-    font-size: .75rem;
+    font-size: 0.75rem;
     height: 48px;
     padding: 0 20px;
 
@@ -15,9 +16,140 @@
 
 .v-data-table-body {
   td {
-    font-size: .875rem;
+    font-size: 0.875rem;
     height: 48px;
-    border-bottom: 1px solid gray;  
     margin: 0 auto;
+    border-top: 1px solid gray;
+    padding: 0 16px;
+    transition: height 0.2s cubic-bezier(0.4, 0, 0.6, 1);
   }
+
+  tr {
+    height: 70px;
+
+    &:hover {
+      background-color: #e8fdf5;
+    }
+  }
+}
+
+.pagination {
+  ul {
+    display: flex;
+
+    li {
+      list-style: none;
+    }
+  }
+}
+
+.notice-bar {
+  height: 50px;
+  width: 100%;
+  padding-left: 140px;
+  background-color: #00bcc3;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  position: relative;
+  top: 0;
+  left: 0;
+  font-size: 15px;
+  font-weight: 700;
+
+  &__logo {
+    padding: 6px 8px;
+    border: 1.5px solid #fff;
+    border-radius: 20px;
+  }
+
+  &__post-title {
+    padding-left: 20px;
+  }
+}
+
+.card-container {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0;
+  }
+}
+
+.used-status {
+  background-color: #000;
+  border-color: #000;
+  min-width: 50px;
+  padding: 0 12.4444444444px;
+  height: 22px;
+  border-radius: 10px;
+  border: none;
+
+  &::before {
+    background-color: currentColor;
+    border-radius: inherit;
+    bottom: 0;
+    color: inherit;
+    content: '';
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+  }
+
+  span {
+    align-items: center;
+    color: inherit;
+    display: flex;
+    flex: 1 0 auto;
+    justify-content: inherit;
+    line-height: normal;
+    position: relative;
+    transition: inherit;
+    transition-property: opacity;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 12px;
+    text-align: center;
+    color: #fff;
+    text-transform: uppercase;
+  }
+}
+
+.bg-black {
+  background-color: black;
+  border-color: black;
+}
+
+.bg-blue {
+  background-color: #00bcc3;
+  border-color: #00bcc3;
+}
+
+.text-orange {
+  color: orange;
+  font-weight: 600;
+}
+
+.text-black {
+  color: black;
+  font-weight: 600;
+}
+
+.text-green {
+  color: green;
+  font-weight: 600;
+}
+
+.text-red {
+  color: red;
+  font-weight: 600;
+}
+
+.text-purple {
+  color: purple;
+  font-weight: 600;
 }

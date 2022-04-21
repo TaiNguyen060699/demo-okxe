@@ -35,14 +35,19 @@ export default createStore({
       state.token = ''
     },
 
-    listProduct(state, data) {
-      state.listProduct = data
+    listProduct(state, listProduct) {
+      state.listProduct = listProduct 
     },
 
-    // isActivePage(state, data) {
-    //   state.currentPage = data
-    // }
+    totalPage(state, totalPage) {
+      state.totalPage = totalPage
+    },
+
+    isActivePage(state, data) {
+      state.currentPage = data
+    }
   },
+
   actions: {
     doLogin({ commit }, email) {
       return new Promise((resolve, reject) => {
@@ -75,27 +80,22 @@ export default createStore({
       })
     },
 
-    handleLoadProduct({ commit, state }) {
+    handleLoadProduct({ commit, state}) {
       const token = state.token
-      const currentPage = 1
-      axios.get(`http://dev.okxe.vn:9060/api/v2/products?page=${currentPage}&sort_by=updated_at&order_by=desc&count=50`,{
+      axios.get(`http://dev.okxe.vn:9060/api/v2/products?page=${this.state.currentPage}&sort_by=updated_at&order_by=desc&count=50`,{
         headers: {"Authorization" : `Bearer ${token}`}
       })
       .then(res => {
         const data  = res.data.data;
         const totalPage  = res.data.total;
-        console.log(Array.from(
-          { length: totalPage / 50 },
-          (_, index) => index + 1
-        )),
-        commit('listProduct', data, {totalPage: totalPage })
+        commit('listProduct', data)
+        commit('totalPage', totalPage)
       }).catch(err => console.log(err))
     },
 
-    // handleActivePage({commit}, currentPage = 1) {
-    //   console.log(currentPage);
-    //   commit('isActivePage', currentPage)
-    // }
+    handleActivePage({commit}, currentPage = 1) {
+      commit('isActivePage', currentPage)
+    }
   },
   modules: {
   }
