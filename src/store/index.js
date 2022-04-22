@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import axios from 'axios'
+import  axios from '../repositories/axiosClient'
 
 export default createStore({
   state: {
@@ -12,7 +12,12 @@ export default createStore({
     brands: [],
     model: [],
     trim: [],
-    id: ''
+    id: '',
+    modelID: '',
+    listModelID: [],
+    trimID: '',
+    user: [],
+    location: [],
   },
   getters: {
     isLoggedIn: state => !!state.token,
@@ -59,13 +64,31 @@ export default createStore({
       state.model = data
     },
 
+    getModelID(state, data) {
+      state.listModelID = data
+    },
     getTrim(state, data) {
       state.trim = data
     },
 
     setID(state, data) {
       state.id = data
-      state.product = data
+    },
+
+    setModelID(state, data) {
+      state.modelID = data
+    },
+
+    setTrimID(state, data) {
+      state.trimID = data
+    },
+
+    getUser(state, data) {
+      state.user = data
+    },
+
+    getLocation(state, data) {
+      state.location = data
     }
   },
 
@@ -73,7 +96,7 @@ export default createStore({
     doLogin({ commit }, email) {
       return new Promise((resolve, reject) => {
         commit('auth_request')
-        axios({ url: 'http://dev.okxe.vn:9060/api/auth/login', data: email, method: 'POST' })
+        axios({ url: '/auth/login', data: email, method: 'POST' })
           .then(resp => {
             const token = resp.data.data.access_token;
             const email = resp.data.data.user.email;
@@ -102,10 +125,13 @@ export default createStore({
     },
 
     handleLoadProduct({ commit, state }) {
-      const token = state.token
-      axios.get(`http://dev.okxe.vn:9060/api/v2/products?page=${this.state.currentPage}&sort_by=updated_at&order_by=desc&count=50`, {
-        headers: { "Authorization": `Bearer ${token}` }
-      })
+      const params = {
+        page: state.currentPage,
+        sort_by: 'updated_at',
+        order_by:'desc',
+        count: 50,
+      }
+      axios.get('/v2/products', { params: params })
         .then(res => {
           const data = res.data.data;
           const totalPage = res.data.total;
@@ -118,36 +144,97 @@ export default createStore({
       commit('isActivePage', currentPage)
     },
 
-    handleLoadBrands({ commit, state }) {
-      const token = state.token
-      axios.get('http://dev.okxe.vn:9060/api/brands', {
-        headers: { "Authorization": `Bearer ${token}` }
-      })
+    handleLoadBrands({ commit }) {
+      axios.get('/brands')
         .then(res => {
           const data = res.data.data;
-          console.log(data)
           commit('getBrands', data)
         })
         .catch(err => console.log(err))
     },
 
-    handleLoadModel({ commit, state }) {
-      const token = state.token
-      axios.get(`http://dev.okxe.vn:9060/api/brands/${state.id}/models`, {
-        headers: { "Authorization": `Bearer ${token}` }
-      })
+    handleLoadModel({ commit }, id) {
+      commit('setID', id)
+      axios.get(`/brands/${id}/models`)
         .then(res => {
-          const data = res.data.data
+          const data = res.data.data.model
           commit('getModel', data)
         }).catch(err => console.log(err))
     },
 
-    handleSetID({ commit, state }, id) {
-      const token = state.token
+    handleSetID({ commit }, id) {
+      const setID = localStorage.setItem('brand_id', id);
+      commit('setID', setID)
+      const params = {
+        brand_id: id,
+        page: this.state.currentPage
+      }
+      axios.get(`/v2/products`, {params: params})
+        .then(res => {
+          const data = res.data.data
+          commit('getProduct', data)
+        }).catch(err => console.log(err))
+    },
+
+    handleLoadModelDetail({ commit }, id) {
       commit('setID', id)
-      axios.get(`http://dev.okxe.vn:9060/api/v2/products?page=1&sort_by=updated_at&order_by=desc&brand_id=${id}&count=50`, {
-        headers: { "Authorization": `Bearer ${token}` }
-      })
+      axios.get(`/model-details`, {params: {model_id: id}})
+        .then(res => {
+          const data = res.data.data
+          commit('getModelID', data)
+        }).catch(err => console.log(err))
+    },
+
+    handleSetModelID({ commit }, modelID) {
+      const id = localStorage.getItem('brand_id')
+      const model_id = localStorage.setItem('model_id', modelID)
+      commit('setModelID', model_id)
+      const params = {
+        brand_id: id,
+        model_id: modelID
+      }
+      axios.get(`/v2/products`, { params: params })
+        .then(res => {
+          const data = res.data.data
+          commit('getProduct', data)
+        }).catch(err => console.log(err))
+    },
+
+    handleSetTrim({ commit }, trimID) {
+      commit('setTrimID', trimID)
+      axios.get(`/v2/products`, {params: {detail_model_id: trimID}})
+        .then(res => {
+          const data = res.data.data
+          commit('getProduct', data)
+        }).catch(err => console.log(err))
+    },
+
+    handleSetUser({ commit }) {
+      axios.get('/users')
+        .then(res => {
+          const data = res.data.data
+          commit('getUser', data)
+        }).catch(err => console.log(err))
+    },
+
+    handleLoadUser({ commit }, id) {
+      axios.get(`/v2/products`, {params: {created_by: id}})
+        .then(res => {
+          const data = res.data.data
+          commit('getProduct', data)
+        }).catch(err => console.log(err))
+    },
+
+    handleGetLocation({ commit }) {
+      axios.get(`/locations/cities`)
+        .then(res => {
+          const data = res.data.data
+          commit('getLocation', data)
+        }).catch(err => console.log(err))
+    },
+
+    handleLoadLocation({ commit }, id) {
+      axios.get(`/v2/products`, {params: { location_id:id }})
         .then(res => {
           const data = res.data.data
           commit('getProduct', data)

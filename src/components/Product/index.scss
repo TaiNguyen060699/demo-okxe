@@ -73,6 +73,34 @@
     display: flex;
     justify-content: space-between;
     padding: 20px 0;
+
+    &-title {
+      font-weight: 600;
+    }
+  }
+
+  &__select {
+    padding-bottom: 10px;
+
+    p {
+      font-size: 12px;
+      text-align: left;
+      color: rgba(0,0,0,.87);
+      margin: 0;
+      padding-bottom: 5px;
+    }
+
+    select {
+      width: 160px;
+      padding: 10px;
+      margin-right: 10px;
+      border: 1px solid #e5e5e5;
+      cursor: pointer;
+
+      option {
+        padding: 5px 0;
+      }
+    }
   }
 }
 

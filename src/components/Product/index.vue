@@ -33,8 +33,10 @@
             </td>
             <td>
               <div style="font-size: 14px">
-                <span style="font-weight: 700">{{ val.seller.name }}</span>
-                <p>{{ val.seller.type }}</p>
+                <span style="font-weight: 700">{{
+                  val.seller ? val.seller.name : ""
+                }}</span>
+                <p>{{ val.seller ? val.seller.type : "" }}</p>
               </div>
             </td>
             <td>
@@ -51,8 +53,14 @@
             </td>
             <td>
               <div class="d-flex flex-nowrap align-center">
-                <img :src="val.brand.logo" alt="" style="width: 36px" />
-                <span style="margin-left: 5px">{{ val.brand.name }}</span>
+                <img
+                  :src="val.brand ? val.brand.logo : ''"
+                  alt="alt"
+                  style="width: 36px"
+                />
+                <span style="margin-left: 5px">{{
+                  val.brand ? val.brand.name : ""
+                }}</span>
               </div>
             </td>
             <td>
@@ -94,6 +102,11 @@
             </td>
             <td>
               <div>
+                <span>{{ val.created_by || "-" }}</span>
+              </div>
+            </td>
+            <td>
+              <div>
                 <span>{{ formatDate(val.status_latest_datetime) }}</span>
               </div>
             </td>
@@ -109,14 +122,14 @@
             </td>
             <td>
               <div>
-                <span 
-                  style="text-transform: capitalize;"
+                <span
+                  style="text-transform: capitalize"
                   :class="[
-                    val.sales_status === 'locked' ? 'text-orange': '',
-                    val.sales_status === 'sold' ? 'text-black': '',
-                    val.sales_status === 'deleted' ? 'text-red': '',
-                    val.sales_status === 'done' ? 'text-green': '',
-                    val.sales_status === 'in review' ? 'text-purple': ''
+                    val.sales_status === 'locked' ? 'text-orange' : '',
+                    val.sales_status === 'sold' ? 'text-black' : '',
+                    val.sales_status === 'deleted' ? 'text-red' : '',
+                    val.sales_status === 'done' ? 'text-green' : '',
+                    val.sales_status === 'in review' ? 'text-purple' : '',
                   ]"
                 >
                   {{ val.sales_status }}
@@ -145,7 +158,7 @@ import { mapActions, mapState } from "vuex";
 import NavBar from "../NavBar/index.vue";
 import Pagination from "../Pagination/index.vue";
 import ProductManagement from "./ProductManagement.vue";
-import moment from 'moment'
+import moment from "moment";
 
 export default {
   data() {
@@ -162,6 +175,7 @@ export default {
         { value: "Used Distance", key: "id" },
         { value: "Price(VND)", key: "id" },
         { value: "Regitered Date", key: "id" },
+        { value: "Create By", key: "id" },
         { value: "Last updated at", key: "id" },
         { value: "Status updated at", key: "id" },
         { value: "Status updated by", key: "id" },
@@ -181,11 +195,11 @@ export default {
       this.handleLoadProduct();
     },
 
-     formatDate: function (value) {
-      if(value) {
-         return moment(String(value)).format('DD.MM.YYYY hh:mm:ss')
+    formatDate: function (value) {
+      if (value) {
+        return moment(String(value)).format("DD.MM.YYYY hh:mm:ss");
       }
-    }
+    },
   },
 
   computed: {
