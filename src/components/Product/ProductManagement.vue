@@ -17,197 +17,16 @@
           results
         </div>
       </div>
-
-      <div class="card-container__select">
-        <div class="card-container__select-make">
-          <p>Make</p>
-          <select
-            name=""
-            id=""
-            v-model="selected"
-            @change="handleChangeBrand(selected)"
-          >
-            <option :value="all" disabled>All</option>
-            <option :value="val.id" v-for="(val, key) in brands" :key="key">
-              {{ val.name }}
-            </option>
-          </select>
-        </div>
-        <div class="card-container__select-make">
-          <p>Model</p>
-          <select
-            :disabled="isDisabledModel"
-            name=""
-            id=""
-            v-model="selectedModel"
-            @change="handleChangeModel(selectedModel)"
-          >
-            <option :value="all">All</option>
-            <option :value="val.id" v-for="(val, key) in model" :key="key">
-              {{ val.name }}
-            </option>
-          </select>
-        </div>
-        <div class="card-container__select-make">
-          <p>Trim</p>
-          <select
-            :disabled="isDisabledTrim"
-            name=""
-            id=""
-            v-model="selectedTrim"
-            @change="handleChangeTrim(selectedTrim)"
-          >
-            <option :value="all">All</option>
-            <option
-              :value="val.id"
-              v-for="(val, key) in listModelID"
-              :key="key"
-            >
-              {{ val.name }}
-            </option>
-          </select>
-        </div>
-        <div class="card-container__select-make">
-          <p>Product Type</p>
-          <select
-            name=""
-            id=""
-            v-model="selectedUser"
-            @change="handleChangeUser(selectedUser)"
-          >
-            <option value="">All</option>
-            <option value="">Used</option>
-            <option value="">New</option>
-          </select>
-        </div>
-        <div class="card-container__select-make">
-          <p>Product Location</p>
-          <select
-            name=""
-            id=""
-            v-model="selectLocation"
-            @change="handleChangeLocation(selectLocation)"
-          >
-            <option value="" disabled>All</option>
-            <option :value="val.id" v-for="(val, key) in location" :key="key">
-              {{ val.name.slice(16) }}
-            </option>
-          </select>
-        </div>
-        <div class="card-container__select-make">
-          <p>Created By</p>
-          <select
-            name=""
-            id=""
-            v-model="selectedUser"
-            @change="handleChangeUser(selectedUser)"
-          >
-            <option value="" disabled>All</option>
-            <option :value="val.id" v-for="(val, key) in user" :key="key">
-              {{ val.full_name }}
-            </option>
-          </select>
-        </div>
-        <div class="card-container__select-make">
-          <p>Product Status</p>
-          <select
-            name=""
-            id=""
-            v-model="selectedUser"
-            @change="handleChangeUser(selectedUser)"
-          >
-            <option value="" disabled>All</option>
-            <option :value="val.id" v-for="(val, key) in productStatus" :key="key">
-              {{ val }}
-            </option>
-          </select>
-        </div>
-      </div>
+      <FliterProduct />
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
-
+import FliterProduct from "./FliterProduct.vue";
 export default {
-  components: {},
-
-  data() {
-    return {
-      selected: "",
-      selectedModel: "",
-      selectedTrim: "",
-      selectedUser: "",
-      selectLocation: "",
-      all: "",
-      isDisabledModel: true,
-      isDisabledTrim: true,
-      productStatus: [
-        'All',
-        'On Selling',
-        'In review',
-        'Blocked',
-        'Sold',
-        'Deleted',
-        'In Transaction',
-        'Locked'
-      ]
-    };
-  },
-
-  methods: {
-    ...mapActions([
-      "handleLoadBrands",
-      "handleSetID",
-      "handleLoadModel",
-      "handleLoadProduct",
-      "handleLoadModelDetail",
-      "handleSetModelID",
-      "handleSetTrim",
-      "handleSetUser",
-      "handleLoadUser",
-      "handleGetLocation",
-      "handleLoadLocation"
-    ]),
-
-    handleChangeBrand(id) {
-      this.handleSetID(id);
-      if (this.handleLoadModel(id)) {
-        this.isDisabledModel = false;
-        this.selectedModel = "";
-      }
-    },
-
-    handleChangeModel(modelID) {
-      this.handleSetModelID(modelID);
-      if (this.handleLoadModelDetail(modelID)) {
-        this.isDisabledTrim = false;
-        this.selectedTrim = "";
-      }
-    },
-
-    handleChangeTrim(trimID) {
-      this.handleSetTrim(trimID);
-    },
-
-    handleChangeUser(id) {
-      this.handleLoadUser(id);
-    },
-
-    handleChangeLocation(id) {
-      this.handleLoadLocation(id)
-    }
-  },
-
-  computed: {
-    ...mapState(["product", "brands", "id", "model", "listModelID", "user", "location"]),
-  },
-
-  mounted() {
-    this.handleLoadBrands();
-    this.handleSetUser();
-    this.handleGetLocation();
+  components: {
+    FliterProduct,
   },
 };
 </script>
@@ -215,4 +34,6 @@ export default {
 <style lang='scss'>
 @import "./index";
 @import url("https://fonts.googleapis.com/css?family=Mogra|Roboto");
+@import "../../../node_modules/react-date-range/dist/styles.css"; // main style file
+@import "../../../node_modules/react-date-range/dist/theme/default.css"; // theme css file
 </style>

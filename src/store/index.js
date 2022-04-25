@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import  axios from '../repositories/axiosClient'
+import axios from '../repositories/axiosClient'
 
 export default createStore({
   state: {
@@ -18,7 +18,27 @@ export default createStore({
     trimID: '',
     user: [],
     location: [],
+    type: '',
+    params: {
+      page: null,
+      sort_by: 'updated_at',
+      order_by: 'desc',
+      start_date: null,
+      end_date: null,
+      type: null,
+      brand_id: null,
+      model_id: null,
+      detail_model_id: null,
+      location_id: null,
+      sales_status: null,
+      status_latest_datetime_from: null,
+      status_latest_datetime_to: null,
+      status_latest_user: null,
+      created_by: null,
+      count: 50
+    }
   },
+
   getters: {
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
@@ -67,6 +87,7 @@ export default createStore({
     getModelID(state, data) {
       state.listModelID = data
     },
+
     getTrim(state, data) {
       state.trim = data
     },
@@ -89,7 +110,7 @@ export default createStore({
 
     getLocation(state, data) {
       state.location = data
-    }
+    },
   },
 
   actions: {
@@ -102,7 +123,7 @@ export default createStore({
             const email = resp.data.data.user.email;
             localStorage.setItem('token', token)
             localStorage.setItem("email", email)
-            axios.defaults.headers.common['authorization'] = `Token ${token}`
+            axios.defaults.headers.common['authorization'] = `Bearer ${token}`
             commit('auth_success', token, email)
             resolve(resp)
           })
@@ -125,13 +146,8 @@ export default createStore({
     },
 
     handleLoadProduct({ commit, state }) {
-      const params = {
-        page: state.currentPage,
-        sort_by: 'updated_at',
-        order_by:'desc',
-        count: 50,
-      }
-      axios.get('/v2/products', { params: params })
+      state.params.page = state.currentPage
+      axios.get('/v2/products', { params: state.params })
         .then(res => {
           const data = res.data.data;
           const totalPage = res.data.total;
@@ -162,47 +178,40 @@ export default createStore({
         }).catch(err => console.log(err))
     },
 
-    handleSetID({ commit }, id) {
-      const setID = localStorage.setItem('brand_id', id);
-      commit('setID', setID)
-      const params = {
-        brand_id: id,
-        page: this.state.currentPage
-      }
-      axios.get(`/v2/products`, {params: params})
+    handleSetID({ commit, state }, id) {
+      state.params.brand_id = id
+      axios.get(`/v2/products`, { params: state.params })
         .then(res => {
           const data = res.data.data
           commit('getProduct', data)
         }).catch(err => console.log(err))
     },
 
-    handleLoadModelDetail({ commit }, id) {
+    handleLoadModelDetail({ commit, state }, id) {
       commit('setID', id)
-      axios.get(`/model-details`, {params: {model_id: id}})
+      state.params.model_id = id
+      axios.get(`/model-details`, { params: state.params })
         .then(res => {
           const data = res.data.data
           commit('getModelID', data)
         }).catch(err => console.log(err))
     },
 
-    handleSetModelID({ commit }, modelID) {
-      const id = localStorage.getItem('brand_id')
+    handleSetModelID({ commit, state }, modelID) {
       const model_id = localStorage.setItem('model_id', modelID)
       commit('setModelID', model_id)
-      const params = {
-        brand_id: id,
-        model_id: modelID
-      }
-      axios.get(`/v2/products`, { params: params })
+      state.params.model_id = modelID
+      axios.get(`/v2/products`, { params: state.params })
         .then(res => {
           const data = res.data.data
           commit('getProduct', data)
         }).catch(err => console.log(err))
     },
 
-    handleSetTrim({ commit }, trimID) {
+    handleSetTrim({ commit, state }, trimID) {
       commit('setTrimID', trimID)
-      axios.get(`/v2/products`, {params: {detail_model_id: trimID}})
+      state.params.detail_model_id = trimID
+      axios.get(`/v2/products`, { params: state.params })
         .then(res => {
           const data = res.data.data
           commit('getProduct', data)
@@ -217,8 +226,9 @@ export default createStore({
         }).catch(err => console.log(err))
     },
 
-    handleLoadUser({ commit }, id) {
-      axios.get(`/v2/products`, {params: {created_by: id}})
+    handleLoadUser({ commit, state }, id) {
+      state.params.created_by = id
+      axios.get(`/v2/products`, { params: state.params })
         .then(res => {
           const data = res.data.data
           commit('getProduct', data)
@@ -233,12 +243,40 @@ export default createStore({
         }).catch(err => console.log(err))
     },
 
-    handleLoadLocation({ commit }, id) {
-      axios.get(`/v2/products`, {params: { location_id:id }})
+    handleLoadLocation({ commit, state }, id) {
+      state.params.location_id = id
+      axios.get(`/v2/products`, { params: state.params })
         .then(res => {
           const data = res.data.data
           commit('getProduct', data)
         }).catch(err => console.log(err))
+    },
+
+    handleLoadProductType({ commit, state }, type) {
+      state.params.type = type
+      axios.get("/v2/products", { params: state.params })
+        .then(res => {
+          const data = res.data.data
+          commit('getProduct', data)
+        })
+    },
+
+    handleLoadProductStatus({ commit, state }, status) {
+      state.params.sales_status = status
+      axios.get("/v2/products", { params: state.params })
+        .then(res => {
+          const data = res.data.data
+          commit('getProduct', data)
+        })
+    },
+
+    handleLoadStatusUpdateBy({ commit, state }, status_user) {
+      state.params.status_latest_user = status_user
+      axios.get("/v2/products", { params: state.params })
+        .then(res => {
+          const data = res.data.data
+          commit('getProduct', data)
+        })
     }
   },
   modules: {
