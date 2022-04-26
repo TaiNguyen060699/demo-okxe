@@ -1,11 +1,8 @@
 import { createStore } from 'vuex'
-import axios from '../repositories/axiosClient'
+import axios from '../../repositories/axiosClient'
 
 export default createStore({
   state: {
-    email: '',
-    status: '',
-    token: localStorage.getItem('token') || '',
     product: [],
     currentPage: 1,
     totalPage: 0,
@@ -19,6 +16,7 @@ export default createStore({
     user: [],
     location: [],
     type: '',
+    date: [],
     params: {
       page: null,
       sort_by: 'updated_at',
@@ -40,30 +38,9 @@ export default createStore({
   },
 
   getters: {
-    isLoggedIn: state => !!state.token,
-    authStatus: state => state.status,
   },
 
   mutations: {
-    auth_request(state) {
-      state.status = 'loading'
-    },
-
-    auth_success(state, token, email) {
-      state.status = 'success'
-      state.token = token
-      state.user = email
-    },
-
-    auth_error(state) {
-      state.status = 'error'
-    },
-
-    logout(state) {
-      state.status = ''
-      state.token = ''
-    },
-
     getProduct(state, product) {
       state.product = product
     },
@@ -113,42 +90,11 @@ export default createStore({
     },
 
     setParams(state, data) {
-      state.params = { ...state.params, ...data }
+      state.params = data
     }
   },
 
   actions: {
-    doLogin({ commit }, email) {
-      return new Promise((resolve, reject) => {
-        commit('auth_request')
-        axios({ url: '/auth/login', data: email, method: 'POST' })
-          .then(resp => {
-            const token = resp.data.data.access_token;
-            const email = resp.data.data.user.email;
-            localStorage.setItem('token', token)
-            localStorage.setItem("email", email)
-            axios.defaults.headers.common['authorization'] = `Bearer ${token}`
-            commit('auth_success', token, email)
-            resolve(resp)
-          })
-          .catch(err => {
-            commit('auth_error')
-            localStorage.removeItem('token')
-            reject(err)
-          })
-      })
-    },
-
-    doLogout({ commit }) {
-      return new Promise((resolve) => {
-        commit('logout');
-        localStorage.removeItem('token')
-        localStorage.removeItem('email')
-        localStorage.removeItem('password')
-        resolve()
-      })
-    },
-
     handleLoadProduct({ commit, state }) {
       state.params.page = state.currentPage
       axios.get('/v2/products', { params: state.params })
@@ -283,34 +229,19 @@ export default createStore({
         })
     },
 
-    handleRegistrationDate({commit, state}) {
-      const start_date = localStorage.getItem('startDate')
-      const end_date = localStorage.getItem('endDate')
+    handleRegistrationDate({ commit, state }, start_date, end_date) {
       state.params.start_date = start_date
       state.params.end_date = end_date
       axios.get("/v2/products", { params: state.params })
-      .then(res => {
-        const data = res.data.data
-        commit('getProduct', data)
-      })
+        .then(res => {
+          const data = res.data.data
+          commit('getProduct', data)
+        })
     },
 
-    handleStatusDate({commit, state}) {
-      const start_date = localStorage.getItem('status_latest_datetime_from')
-      const end_date = localStorage.getItem('status_latest_datetime_to')
-      state.params.status_latest_datetime_from = start_date
-      state.params.status_latest_datetime_toe = end_date
-      axios.get("/v2/products", { params: state.params })
-      .then(res => {
-        const data = res.data.data
-        commit('getProduct', data)
-      })
-    },
-
-    setParams({commit}, params) {
+    setParams({ commit }, params) {
+      console.log(params)
       commit('setParams', params)
     }
-  },
-  modules: {
   }
 })

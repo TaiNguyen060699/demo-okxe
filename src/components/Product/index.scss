@@ -45,7 +45,6 @@
 
 .notice-bar {
   height: 50px;
-  width: 100%;
   padding-left: 140px;
   background-color: #00bcc3;
   color: #fff;
@@ -80,23 +79,31 @@
   }
 
   &__select {
+    display: flex;
+    align-items: center;
     padding-bottom: 10px;
+
+    &-make {
+      margin-right: 10px;
+    }
 
     p {
       font-size: 12px;
       text-align: left;
-      color: rgba(0,0,0,.87);
+      color: rgba(0, 0, 0, 0.87);
       margin: 0;
       padding-bottom: 5px;
     }
 
     select {
-      margin-right: 10px;
-      width: 160px;
       padding: 10px;
       font-size: 14px;
       border: 1px solid #e5e5e5;
       cursor: pointer;
+
+      &:not(:first-child) {
+        width: 160px;
+      }
 
       option {
         padding: 5px 0;
@@ -148,6 +155,10 @@
   }
 }
 
+.rowd {
+  display: flex;
+}
+
 .bg-black {
   background-color: black;
   border-color: black;
@@ -181,8 +192,4 @@
 .text-purple {
   color: purple;
   font-weight: 600;
-}
-
-.card-container__select {
-  display: flex;
 }

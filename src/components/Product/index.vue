@@ -1,9 +1,12 @@
 <template>
-  <div class="row">
-    <div class="col-md-2">
+  <div class="rowd">
+    <div class="navb" style="margin-right: 10px">
       <NavBar />
     </div>
-    <div class="col-md-10">
+    <div
+      class="flex"
+      style="display: flex; align-items: center; flex-direction: column"
+    >
       <ProductManagement />
       <table>
         <thead class="v-data-table-header">
@@ -139,16 +142,7 @@
           </tr>
         </tbody>
       </table>
-    </div>
-    <div
-      class="container container--fluid"
-      style="display: flex; justify-content: center; padding-top: 25px"
-    >
-      <div class="pagination-custom text-center">
-        <nav class="page-item">
-          <Pagination @pageChanged="onclickPage" :pagess="total"> </Pagination>
-        </nav>
-      </div>
+      <Pagination @pageChanged="onclickPage" :pagess="total"> </Pagination>
     </div>
   </div>
 </template>
@@ -183,6 +177,7 @@ export default {
       ],
     };
   },
+  
   components: {
     NavBar,
     Pagination,

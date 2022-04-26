@@ -1,6 +1,19 @@
 <template>
   <div class="card-container__select">
     <div class="card-container__select-make">
+      <p>Registration date</p>
+      <Datepicker
+        v-model="selectedRegistrationDate"
+        :value="selectedRegistrationDate"
+        range
+        multiCalendars
+        placeholder="All day"
+        ref="input"
+        name="input"
+        @update:modelValue="handleRegistrationDate1(selectedRegistrationDate)"
+      />
+    </div>
+    <div class="card-container__select-make">
       <p>Make</p>
       <select
         name=""
@@ -9,6 +22,7 @@
         @change="handleChangeBrand(selected)"
       >
         <option :value="all" disabled>All</option>
+        <option value="">All</option>
         <option :value="val.id" v-for="(val, key) in brands" :key="key">
           {{ val.name }}
         </option>
@@ -67,6 +81,7 @@
         @change="handleChangeLocation(selectLocation)"
       >
         <option value="" disabled>Any Location</option>
+        <option value="">Any Location</option>
         <option :value="val.id" v-for="(val, key) in location" :key="key">
           {{ val.name.slice(16) }}
         </option>
@@ -104,7 +119,18 @@
         </option>
       </select>
     </div>
-     <div class="card-container__select-make">
+    <div class="card-container__select-make">
+      <p>Status Update At</p>
+      <Datepicker 
+        v-model="selectedStatusUpdateDate" 
+        :value="selectedStatusUpdateDate"
+        range 
+        multiCalendars 
+        placeholder="All day" 
+        @update:modelValue="handleStatusDate1(selectedStatusUpdateDate)"
+      />
+    </div>
+    <div class="card-container__select-make">
       <p>Status UpDate By</p>
       <select
         name=""
@@ -113,9 +139,9 @@
         @change="handleLoadStatusUpdateBy1(selectStatusUpdateUser)"
       >
         <option value="all" disabled>All</option>
-        <option value="" >All</option>
-        <option value="auto" >Auto approval</option>
-        <option value="default" >Default</option>
+        <option value="">All</option>
+        <option value="auto">Auto approval</option>
+        <option value="default">Default</option>
         <option :value="val.id" v-for="(val, key) in user" :key="key">
           {{ val.full_name }}
         </option>
@@ -126,9 +152,21 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import moment from "moment";
+
 export default {
-   data() {
+  components: {
+    Datepicker,
+  },
+
+  data() {
     return {
+      startDate: "",
+      endDate: "",
+      selectedStatusUpdateDate: "",
+      selectedRegistrationDate: "",
       selected: "",
       selectedModel: "",
       selectedTrim: "",
@@ -141,16 +179,16 @@ export default {
       isDisabledModel: true,
       isDisabledTrim: true,
       productStatus: [
-       {name: "All", value: ''},
-       {name: "On Selling", value: 'ing'},
-       {name: "In review", value: 'in review'},
-       {name: "Blocked", value: 'blocked'},
-       {name: "Sold", value: 'done'},
-       {name: "Deleted", value: 'delete'},
-       {name: "In Transaction", value: 'pending'},
-       {name: "Locked", value: 'locked'},
+        { name: "All", value: "" },
+        { name: "On Selling", value: "ing" },
+        { name: "In review", value: "in review" },
+        { name: "Blocked", value: "blocked" },
+        { name: "Sold", value: "done" },
+        { name: "Deleted", value: "delete" },
+        { name: "In Transaction", value: "pending" },
+        { name: "Locked", value: "locked" },
       ],
-      brandsFilter: null
+      query: {},
     };
   },
 
@@ -169,7 +207,10 @@ export default {
       "handleLoadLocation",
       "handleLoadProductType",
       "handleLoadProductStatus",
-      "handleLoadStatusUpdateBy"
+      "handleLoadStatusUpdateBy",
+      "setParams",
+      "handleRegistrationDate",
+      "handleStatusDate"
     ]),
 
     handleChangeBrand(id) {
@@ -177,7 +218,11 @@ export default {
       if (this.handleLoadModel(id)) {
         this.isDisabledModel = false;
         this.selectedModel = "";
-        // this.$router.push({path: '/admin/product', query: this.query})
+        this.query.brand_id = id;
+        this.params = this.$router.push({
+          path: "/admin/product",
+          query: this.query,
+        });
       }
     },
 
@@ -186,33 +231,86 @@ export default {
       if (this.handleLoadModelDetail(modelID)) {
         this.isDisabledTrim = false;
         this.selectedTrim = "";
-        // this.$router.push({path: '/admin/product', query: this.query})
+        this.query.model_id = modelID;
+        this.$router.push({
+          path: "/admin/product",
+          query: this.query,
+        });
       }
     },
 
     handleChangeTrim(trimID) {
       this.handleSetTrim(trimID);
+      this.query.detail_model_id = trimID;
+      this.$router.push({
+        path: "/admin/product",
+        query: this.query,
+      });
     },
 
     handleChangeUser(id) {
       this.handleLoadUser(id);
+      this.query.created_by = id;
+      this.$router.push({ path: "/admin/product", query: this.query });
     },
 
     handleChangeLocation(id) {
       this.handleLoadLocation(id);
+      this.query.location_id = id;
+      this.$router.push({ path: "/admin/product", query: this.query });
     },
 
     handleLoadProductType1(type) {
-      this.handleLoadProductType(type)
+      this.handleLoadProductType(type);
+      this.query.type = type;
+      this.$router.push({ path: "/admin/product", query: this.query });
     },
 
     handleLoadProductStatus1(status) {
-     this.handleLoadProductStatus(status);
+      this.handleLoadProductStatus(status);
+      this.query.status = status;
+      this.$router.push({
+        path: "/admin/product",
+        query: this.query,
+      });
     },
 
     handleLoadStatusUpdateBy1(status_user) {
-     this.handleLoadStatusUpdateBy(status_user);
-    }
+      this.handleLoadStatusUpdateBy(status_user);
+      this.query.status_user = status_user;
+      this.$router.push({
+        path: "/admin/product",
+        query: this.query,
+      });
+    },
+
+    handleRegistrationDate1(date) {
+      this.startDate = moment(date[0]).format("YYYY-MM-DD");
+      this.endDate = moment(date[1]).format("YYYY-MM-DD");
+      localStorage.setItem("startDate", this.startDate);
+      localStorage.setItem("endDate", this.endDate);
+      this.query.start_date = this.startDate;
+      this.query.end_date = this.endDate;
+      this.handleRegistrationDate(this.startDate, this.endDate);
+      this.$router.push({
+        path: "/admin/product",
+        query: this.query,
+      });
+    },
+
+    handleStatusDate1(date) {
+      this.startDate = moment(date[0]).format("YYYY-MM-DD");
+      this.endDate = moment(date[1]).format("YYYY-MM-DD");
+      localStorage.setItem("status_latest_datetime_from", this.startDate);
+      localStorage.setItem("status_latest_datetime_to", this.endDate);
+      this.query.status_latest_datetime_from = this.startDate;
+      this.query.status_latest_datetime_to = this.endDate;
+      this.handleStatusDate(this.startDate, this.endDate);
+      this.$router.push({
+        path: "/admin/product",
+        query: this.query,
+      });
+    },
   },
 
   computed: {
@@ -225,13 +323,39 @@ export default {
       "user",
       "location",
       "currentPage",
+      "params",
     ]),
+  },
+
+  watch: {
+    selectedRegistrationDate(val) {
+      this.startDate = moment(val[0]).format("YYYY-MM-DD");
+      this.endDate = moment(val[1]).format("YYYY-MM-DD");
+    },
   },
 
   mounted() {
     this.handleLoadBrands();
     this.handleSetUser();
     this.handleGetLocation();
+  },
+
+  created() {
+    const params = this.$route.query;
+    this.selected = params.brand_id ? params.brand_id : "";
+    (this.selectedModel = params.model_id ? params.model_id : ""),
+      (this.selectedTrim = params.detail_model_id
+        ? params.detail_model_id
+        : ""),
+      (this.selectedUser = params.created_by ? params.created_by : ""),
+      (this.selectLocation = params.location_id ? params.location_id : ""),
+      (this.selectProductType = params.type ? params.type : ""),
+      (this.selectProductStatus = params.sales_status
+        ? params.sales_status
+        : ""),
+      (this.selectStatusUpdateUser = params.status_latest_use
+        ? params.status_latest_use
+        : "");
   },
 };
 </script>

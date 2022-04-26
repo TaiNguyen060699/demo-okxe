@@ -34,6 +34,4 @@ export default {
 <style lang='scss'>
 @import "./index";
 @import url("https://fonts.googleapis.com/css?family=Mogra|Roboto");
-@import "../../../node_modules/react-date-range/dist/styles.css"; // main style file
-@import "../../../node_modules/react-date-range/dist/theme/default.css"; // theme css file
 </style>

@@ -49,7 +49,7 @@
                     </div>
                     <div class="v-text-field__details">
                       <div class="v-messages theme--light error--text" role="alert">
-                        <div class="v-messages__wrapper" v-if="errors.length">
+                        <div class="v-messages__wrapper" v-if="errorsPW.length">
                           <div 
                             class="v-messages__message errors" 
                             v-for="(error, key) in errorsPW" :key="key"

@@ -27,18 +27,24 @@ export default {
   },
 
   methods: {
-    ...mapActions(["handleLoadProduct", "handleActivePage"]),
+    ...mapActions(["handleLoadProduct", "handleActivePage", "setParams"]),
     onPageChange() {
       this.$emit(
         "pageChanged",
         this.handleActivePage((this.currentPage = this.page))
       );
+      this.$router.push({ path: "/admin/product", query: { page: this.currentPage } });
     },
   },
 
   computed: {
     ...mapState(["product", "totalPage", "currentPage"]),
   },
+
+  created() {
+    const params = this.$route.query;
+    this.setParams(params)
+  }
 };
 </script>
 

@@ -31,6 +31,7 @@
     "vue-class-component": "^7.2.6",
     "vue-plain-pagination": "^0.3.0",
     "vue-router": "^4.0.14",
+    "vue-snotify": "^3.2.1",
     "vue-use-paginator": "^0.3.0",
     "vue2-daterange-picker": "^0.6.8",
     "vuejs-paginate": "^2.1.0",

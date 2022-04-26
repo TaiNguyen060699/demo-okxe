@@ -50,4 +50,12 @@ export default {
   transition: width 2s;
   transition-timing-function: cubic-bezier(0.1, 0.7, 1, 0.1);
 }
+
+.dp__menu {
+  transform: translateX(-34%) !important;
+}
+
+.dp__main {
+  width: 335px;
+}
 </style>
