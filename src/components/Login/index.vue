@@ -88,6 +88,9 @@
 
 <script>
 import { mapActions } from "vuex";
+import { createToast } from 'mosha-vue-toastify';
+// import the styling for the toast
+import 'mosha-vue-toastify/dist/style.css'
 
 export default {
   data() {
@@ -114,8 +117,14 @@ export default {
           localStorage.setItem("email", data.email),
           localStorage.setItem("password", data.password)
         )
-        .then(() => this.$router.push("/admin/dashboard"))
-        .catch((err) => console.log(err));
+        .then(() => {
+          this.$router.push("/admin")
+          createToast('Welcome to OKXE Back Office Administrator')
+        })
+        .catch((err) => {
+          createToast('Please Try Again')
+          console.log(err)
+        });
     },
 
     checkFormEmail(e) {

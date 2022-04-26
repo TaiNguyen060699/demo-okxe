@@ -20,7 +20,7 @@
     </div>
     <div class="sidebar__menu">
       <div>
-        <router-link to="/admin/dashboard">
+        <router-link to="/admin">
           <div class="list-item-title" style="padding-bottom: 25px">
             Dashboard
           </div>
