@@ -8,8 +8,6 @@
         range
         multiCalendars
         placeholder="All day"
-        ref="input"
-        name="input"
         @update:modelValue="handleRegistrationDate1(selectedRegistrationDate)"
       />
     </div>
@@ -121,12 +119,12 @@
     </div>
     <div class="card-container__select-make">
       <p>Status Update At</p>
-      <Datepicker 
-        v-model="selectedStatusUpdateDate" 
+      <Datepicker
+        v-model="selectedStatusUpdateDate"
         :value="selectedStatusUpdateDate"
-        range 
-        multiCalendars 
-        placeholder="All day" 
+        range
+        multiCalendars
+        placeholder="All day"
         @update:modelValue="handleStatusDate1(selectedStatusUpdateDate)"
       />
     </div>
@@ -210,7 +208,7 @@ export default {
       "handleLoadStatusUpdateBy",
       "setParams",
       "handleRegistrationDate",
-      "handleStatusDate"
+      "handleStatusDate",
     ]),
 
     handleChangeBrand(id) {
@@ -285,8 +283,10 @@ export default {
     },
 
     handleRegistrationDate1(date) {
-      this.startDate = moment(date[0]).format("YYYY-MM-DD");
-      this.endDate = moment(date[1]).format("YYYY-MM-DD");
+      if (!date) return;
+      let [date1, date2] = date;
+      this.startDate = moment(date1).format("YYYY-MM-DD");
+      this.endDate = moment(date2).format("YYYY-MM-DD");
       localStorage.setItem("startDate", this.startDate);
       localStorage.setItem("endDate", this.endDate);
       this.query.start_date = this.startDate;
@@ -299,8 +299,10 @@ export default {
     },
 
     handleStatusDate1(date) {
-      this.startDate = moment(date[0]).format("YYYY-MM-DD");
-      this.endDate = moment(date[1]).format("YYYY-MM-DD");
+      if (!date) return;
+      let [date1, date2] = date;
+      this.startDate = moment(date1).format("YYYY-MM-DD");
+      this.endDate = moment(date2).format("YYYY-MM-DD");
       localStorage.setItem("status_latest_datetime_from", this.startDate);
       localStorage.setItem("status_latest_datetime_to", this.endDate);
       this.query.status_latest_datetime_from = this.startDate;
@@ -329,8 +331,49 @@ export default {
 
   watch: {
     selectedRegistrationDate(val) {
-      this.startDate = moment(val[0]).format("YYYY-MM-DD");
-      this.endDate = moment(val[1]).format("YYYY-MM-DD");
+      if (!val) {
+        localStorage.setItem("startDate", "");
+        localStorage.setItem("endDate", "");
+        this.startDate = "";
+        this.endDate = "";
+        this.handleRegistrationDate();
+        this.query.start_date = this.startDate;
+        this.query.end_date = this.endDate;
+        this.handleRegistrationDate(this.startDate, this.endDate);
+        this.$router.push({
+          path: "/admin/product",
+          query: this.query,
+        });
+        return;
+      }
+
+      let [date1, date2] = val;
+      this.startDate = moment(date1).format("YYYY-MM-DD");
+      this.endDate = moment(date2).format("YYYY-MM-DD");
+      this.handleRegistrationDate();
+    },
+
+    selectedStatusUpdateDate(val) {
+      if (!val) {
+        localStorage.setItem("status_latest_datetime_from", "");
+        localStorage.setItem("status_latest_datetime_to", "");
+        this.startDate = "";
+        this.endDate = "";
+        this.handleStatusDate1();
+        this.query.status_latest_datetime_from = this.startDate;
+        this.query.status_latest_datetime_to = this.endDate;
+        this.handleStatusDate(this.startDate, this.endDate);
+        this.$router.push({
+          path: "/admin/product",
+          query: this.query,
+        });
+        return;
+      }
+
+      let [date1, date2] = val;
+      this.startDate = moment(date1).format("YYYY-MM-DD");
+      this.endDate = moment(date2).format("YYYY-MM-DD");
+      this.handleStatusDate1();
     },
   },
 
@@ -356,6 +399,14 @@ export default {
       (this.selectStatusUpdateUser = params.status_latest_use
         ? params.status_latest_use
         : "");
+    this.selectedRegistrationDate = [
+      localStorage.getItem("startDate"),
+      localStorage.getItem("endDate"),
+    ];
+    this.selectedStatusUpdateDate = [
+      localStorage.getItem("status_latest_datetime_from"),
+      localStorage.getItem("status_latest_datetime_to"),
+    ];
   },
 };
 </script>
