@@ -1,33 +1,53 @@
 <template>
   <main class="v-main" data-booted="true" style="padding: 80px 0px 0px">
     <div class="v-main__wrap">
-      <div class="container container--fluid" style="background-color: white; height: 100%">
+      <div
+        class="container container--fluid"
+        style="background-color: white; height: 100%"
+      >
         <div class="row align-center justify-center" style="height: 100%">
           <div class="login-page__container">
-            <img src="http://dev.okxe.vn:1112/images/okxe-logo-v2.svg" height="164" width="164" />
+            <img
+              src="http://dev.okxe.vn:1112/images/okxe-logo-v2.svg"
+              height="164"
+              width="164"
+            />
             <form novalidate="novalidate" class="v-form" @submit="checkForm">
-              <div class="
+              <div
+                class="
                   v-input
                   login__username-field
                   v-input--has-state
                   theme--light
                   v-text-field v-text-field--is-booted
                   error--text
-                ">
+                "
+              >
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <div class="v-text-field__slot">
-                      <input maxlength="50" id="input-19" type="text" placeholder="Enter your email"
-                        v-model="email" @input="checkFormEmail" />
+                      <input
+                        maxlength="50"
+                        id="input-19"
+                        type="text"
+                        placeholder="Enter your email"
+                        v-model="email"
+                        @input="checkFormEmail"
+                        autocomplete="on"
+                      />
                     </div>
-                     <div class="v-text-field__details">
-                      <div class="v-messages theme--light error--text" role="alert">
+                    <div class="v-text-field__details">
+                      <div
+                        class="v-messages theme--light error--text"
+                        role="alert"
+                      >
                         <div class="v-messages__wrapper" v-if="errors.length">
-                          <div 
-                            class="v-messages__message errors" 
-                            v-for="(error, key) in errors" :key="key"
+                          <div
+                            class="v-messages__message errors"
+                            v-for="(error, key) in errors"
+                            :key="key"
                           >
-                            {{error}}
+                            {{ error }}
                           </div>
                         </div>
                       </div>
@@ -35,26 +55,38 @@
                   </div>
                 </div>
               </div>
-              <div class="
+              <div
+                class="
                   v-input
                   login__password-field
                   theme--light
                   v-text-field v-text-field--is-booted
-                ">
+                "
+              >
                 <div class="v-input__control">
                   <div class="v-input__slot">
                     <div class="v-text-field__slot">
-                      <input maxlength="50" id="input-22" type="password"
-                        placeholder="Enter your password" v-model="password" @input="checkFormPW"/>
+                      <input
+                        maxlength="51"
+                        id="input-22"
+                        type="password"
+                        placeholder="Enter your password"
+                        v-model="password"
+                        @input="checkFormPW"
+                      />
                     </div>
                     <div class="v-text-field__details">
-                      <div class="v-messages theme--light error--text" role="alert">
+                      <div
+                        class="v-messages theme--light error--text"
+                        role="alert"
+                      >
                         <div class="v-messages__wrapper" v-if="errorsPW.length">
-                          <div 
-                            class="v-messages__message errors" 
-                            v-for="(error, key) in errorsPW" :key="key"
+                          <div
+                            class="v-messages__message errors"
+                            v-for="(error, key) in errorsPW"
+                            :key="key"
                           >
-                            {{error}}
+                            {{ error }}
                           </div>
                         </div>
                       </div>
@@ -62,7 +94,9 @@
                   </div>
                 </div>
               </div>
-              <button type="button" class="
+              <button
+                type="button"
+                class="
                   mt-2
                   v-btn
                   v-btn--block
@@ -72,7 +106,9 @@
                   theme--dark
                   v-size--x-large
                   primary
-                " @click="handleLogin">
+                "
+                @click="handleLogin"
+              >
                 <span class="v-btn__content"><span> Login </span></span>
               </button>
             </form>
@@ -88,9 +124,9 @@
 
 <script>
 import { mapActions } from "vuex";
-import { createToast } from 'mosha-vue-toastify';
+import { createToast } from "mosha-vue-toastify";
 // import the styling for the toast
-import 'mosha-vue-toastify/dist/style.css'
+import "mosha-vue-toastify/dist/style.css";
 
 export default {
   data() {
@@ -118,12 +154,12 @@ export default {
           localStorage.setItem("password", data.password)
         )
         .then(() => {
-          this.$router.push("/admin")
-          createToast('Welcome to OKXE Back Office Administrator')
+          this.$router.push("/admin");
+          createToast("Welcome to OKXE Back Office Administrator");
         })
         .catch((err) => {
-          createToast('Please Try Again')
-          console.log(err)
+          createToast("Please Try Again");
+          console.log(err);
         });
     },
 
@@ -133,7 +169,7 @@ export default {
       if (!this.email) {
         this.errors.push("Enter your Email.");
       } else if (!this.validEmail(this.email)) {
-        this.errors.push("Email is not properly formatted");
+        this.errors.push("The email is not formatted correctly.");
       }
 
       if (!this.errors.length) {
@@ -147,7 +183,7 @@ export default {
 
       if (!this.password) {
         this.errorsPW.push("Password is required");
-      } else if (this.password.length > 8 && this.password.length < 50) {
+      } else if (this.password.length < 8 || this.password.length > 50) {
         this.errorsPW.push("Min 8 characters and Max 50 characters");
       }
 

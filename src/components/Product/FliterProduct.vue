@@ -19,7 +19,6 @@
         v-model="selected"
         @change="handleChangeBrand(selected)"
       >
-        <option :value="all" disabled>All</option>
         <option value="">All</option>
         <option :value="val.id" v-for="(val, key) in brands" :key="key">
           {{ val.name }}
@@ -35,7 +34,7 @@
         v-model="selectedModel"
         @change="handleChangeModel(selectedModel)"
       >
-        <option :value="all">All</option>
+        <option value="">All</option>
         <option :value="val.id" v-for="(val, key) in model" :key="key">
           {{ val.name }}
         </option>
@@ -50,7 +49,7 @@
         v-model="selectedTrim"
         @change="handleChangeTrim(selectedTrim)"
       >
-        <option :value="all">All</option>
+        <option value="">All</option>
         <option :value="val.id" v-for="(val, key) in listModelID" :key="key">
           {{ val.name }}
         </option>
@@ -64,7 +63,6 @@
         v-model="selectProductType"
         @change="handleLoadProductType1(selectProductType)"
       >
-        <option value="all" disabled>All</option>
         <option value="">All</option>
         <option value="used">Used</option>
         <option value="new">New</option>
@@ -186,16 +184,16 @@ export default {
         { name: "In Transaction", value: "pending" },
         { name: "Locked", value: "locked" },
       ],
-      query: {},
+      query: {
+      },
     };
   },
 
   methods: {
     ...mapActions([
       "handleLoadBrands",
-      "handleSetID",
+      "handleLoadMake",
       "handleLoadModel",
-      "handleLoadProduct",
       "handleLoadModelDetail",
       "handleSetModelID",
       "handleSetTrim",
@@ -212,10 +210,11 @@ export default {
     ]),
 
     handleChangeBrand(id) {
-      this.handleSetID(id);
+      this.handleLoadMake(id);
       if (this.handleLoadModel(id)) {
         this.isDisabledModel = false;
         this.selectedModel = "";
+        this.selectedTrim = "";
         this.query.brand_id = id;
         this.params = this.$router.push({
           path: "/admin/product",
@@ -324,8 +323,6 @@ export default {
       "listModelID",
       "user",
       "location",
-      "currentPage",
-      "params",
     ]),
   },
 
@@ -339,7 +336,6 @@ export default {
         this.handleRegistrationDate();
         this.query.start_date = this.startDate;
         this.query.end_date = this.endDate;
-        this.handleRegistrationDate(this.startDate, this.endDate);
         this.$router.push({
           path: "/admin/product",
           query: this.query,
@@ -350,7 +346,7 @@ export default {
       let [date1, date2] = val;
       this.startDate = moment(date1).format("YYYY-MM-DD");
       this.endDate = moment(date2).format("YYYY-MM-DD");
-      this.handleRegistrationDate();
+      this.handleRegistrationDate1();
     },
 
     selectedStatusUpdateDate(val) {
@@ -359,10 +355,9 @@ export default {
         localStorage.setItem("status_latest_datetime_to", "");
         this.startDate = "";
         this.endDate = "";
-        this.handleStatusDate1();
         this.query.status_latest_datetime_from = this.startDate;
         this.query.status_latest_datetime_to = this.endDate;
-        this.handleStatusDate(this.startDate, this.endDate);
+        this.handleStatusDate();
         this.$router.push({
           path: "/admin/product",
           query: this.query,
@@ -386,27 +381,17 @@ export default {
   created() {
     const params = this.$route.query;
     this.selected = params.brand_id ? params.brand_id : "";
-    (this.selectedModel = params.model_id ? params.model_id : ""),
-      (this.selectedTrim = params.detail_model_id
-        ? params.detail_model_id
-        : ""),
-      (this.selectedUser = params.created_by ? params.created_by : ""),
-      (this.selectLocation = params.location_id ? params.location_id : ""),
-      (this.selectProductType = params.type ? params.type : ""),
-      (this.selectProductStatus = params.sales_status
-        ? params.sales_status
-        : ""),
-      (this.selectStatusUpdateUser = params.status_latest_use
-        ? params.status_latest_use
-        : "");
-    this.selectedRegistrationDate = [
-      localStorage.getItem("startDate"),
-      localStorage.getItem("endDate"),
-    ];
-    this.selectedStatusUpdateDate = [
-      localStorage.getItem("status_latest_datetime_from"),
-      localStorage.getItem("status_latest_datetime_to"),
-    ];
+    this.selectedModel = params.model_id ? params.model_id : "";
+    this.selectedTrim = params.detail_model_id ? params.detail_model_id : "";
+    this.selectedUser = params.created_by ? params.created_by : "";
+    this.selectLocation = params.location_id ? params.location_id : "";
+    this.selectProductType = params.type ? params.type : "";
+    this.selectProductStatus = params.sales_status ? params.sales_status : "";
+    this.selectStatusUpdateUser = params.status_latest_use ? params.status_latest_use : "";
+    const startDate = localStorage.getItem("startDate");
+    const endDate = localStorage.getItem("endDate")
+    this.selectedRegistrationDate = [startDate, endDate];
+    this.selectedStatusUpdateDate = [ localStorage.getItem("status_latest_datetime_from"), localStorage.getItem("status_latest_datetime_to")];
   },
 };
 </script>

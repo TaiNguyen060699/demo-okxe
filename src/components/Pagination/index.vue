@@ -3,7 +3,7 @@
     v-model="page"
     :page-count="pagess"
     @click="onPageChange(pagess)"
-    :class="[currentPage === pagess ? 'active' : '']"
+    :class="[page === pagess ? 'active' : '']"
   />
 </template>
 
@@ -27,24 +27,26 @@ export default {
   },
 
   methods: {
-    ...mapActions(["handleLoadProduct", "handleActivePage", "setParams"]),
+    ...mapActions(["handleActivePage", "setParams"]),
     onPageChange() {
       this.$emit(
         "pageChanged",
-        this.handleActivePage((this.currentPage = this.page))
+        this.handleActivePage(this.page),
+        localStorage.setItem('page', this.page),
+        this.$router.push({ path: "/admin/product", query: { page: this.page } })
       );
-      this.$router.push({ path: "/admin/product", query: { page: this.currentPage } });
     },
   },
 
   computed: {
-    ...mapState(["product", "totalPage", "currentPage"]),
+    ...mapState(["product", "totalPage"]),
   },
 
-  created() {
+  mounted() {
     const params = this.$route.query;
+    this.page = params.page;
     this.setParams(params)
-  }
+  },
 };
 </script>
 

@@ -185,7 +185,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(["handleLoadProduct", "handleActivePage"]),
+    ...mapActions(["handleLoadProduct", "handleActivePage", "setParams"]),
     onclickPage() {
       this.handleLoadProduct();
     },
@@ -207,6 +207,28 @@ export default {
   mounted() {
     this.handleLoadProduct();
   },
+
+  beforeUnmount() {
+    this.setParams({
+      page: 1,
+      sort_by: 'updated_at',
+      order_by: 'desc',
+      start_date: null,
+      end_date: null,
+      type: null,
+      brand_id: null,
+      model_id: null,
+      detail_model_id: null,
+      location_id: null,
+      sales_status: null,
+      status_latest_datetime_from: null,
+      status_latest_datetime_to: null,
+      status_latest_user: null,
+      created_by: null,
+      count: 50
+    })
+    this.handleLoadProduct();
+  }
 };
 </script>
 

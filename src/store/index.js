@@ -20,7 +20,7 @@ export default createStore({
     location: [],
     type: '',
     params: {
-      page: null,
+      page: 1,
       sort_by: 'updated_at',
       order_by: 'desc',
       start_date: null,
@@ -141,10 +141,17 @@ export default createStore({
 
     doLogout({ commit }) {
       return new Promise((resolve) => {
-        commit('logout');
-        localStorage.removeItem('token')
-        localStorage.removeItem('email')
-        localStorage.removeItem('password')
+        axios({ url: '/auth/logout', method: 'POST' })
+          .then(() => {
+            commit('logout');
+            localStorage.removeItem('token')
+            localStorage.removeItem('email')
+            localStorage.removeItem('password')
+            localStorage.setItem('startDate', 'All day')
+            localStorage.setItem('endDate', 'All day')
+            localStorage.setItem('status_latest_datetime_from', 'All day')
+            localStorage.setItem('status_latest_datetime_from', 'All day')
+          })
         resolve()
       })
     },
@@ -182,8 +189,11 @@ export default createStore({
         }).catch(err => console.log(err))
     },
 
-    handleSetID({ commit, state }, id) {
+    handleLoadMake({ commit, state }, id) {
       state.params.brand_id = id
+      state.params.model_id = null
+      state.params.detail_model_id = null
+
       axios.get(`/v2/products`, { params: state.params })
         .then(res => {
           const data = res.data.data
@@ -194,6 +204,8 @@ export default createStore({
     handleLoadModelDetail({ commit, state }, id) {
       commit('setID', id)
       state.params.model_id = id
+      state.params.detail_model_id = null
+
       axios.get(`/model-details`, { params: state.params })
         .then(res => {
           const data = res.data.data
@@ -202,8 +214,8 @@ export default createStore({
     },
 
     handleSetModelID({ commit, state }, modelID) {
-      const model_id = localStorage.setItem('model_id', modelID)
-      commit('setModelID', model_id)
+      // const model_id = localStorage.setItem('model_id', modelID)
+      commit('setModelID', modelID)
       state.params.model_id = modelID
       axios.get(`/v2/products`, { params: state.params })
         .then(res => {
