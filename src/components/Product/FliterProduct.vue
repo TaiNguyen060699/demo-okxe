@@ -76,7 +76,6 @@
         v-model="selectLocation"
         @change="handleChangeLocation(selectLocation)"
       >
-        <option value="" disabled>Any Location</option>
         <option value="">Any Location</option>
         <option :value="val.id" v-for="(val, key) in location" :key="key">
           {{ val.name.slice(16) }}
@@ -91,7 +90,7 @@
         v-model="selectedUser"
         @change="handleChangeUser(selectedUser)"
       >
-        <option value="" disabled>All</option>
+        <option value="">All</option>
         <option :value="val.id" v-for="(val, key) in user" :key="key">
           {{ val.full_name }}
         </option>
@@ -105,7 +104,6 @@
         v-model="selectProductStatus"
         @change="handleLoadProductStatus1(selectProductStatus)"
       >
-        <option value="" disabled>All</option>
         <option
           :value="val.value"
           v-for="(val, key) in productStatus"
@@ -134,7 +132,6 @@
         v-model="selectStatusUpdateUser"
         @change="handleLoadStatusUpdateBy1(selectStatusUpdateUser)"
       >
-        <option value="all" disabled>All</option>
         <option value="">All</option>
         <option value="auto">Auto approval</option>
         <option value="default">Default</option>
@@ -184,8 +181,7 @@ export default {
         { name: "In Transaction", value: "pending" },
         { name: "Locked", value: "locked" },
       ],
-      query: {
-      },
+      query: {} 
     };
   },
 
@@ -401,7 +397,7 @@ export default {
       : "";
     const startDate = localStorage.getItem("startDate");
     const endDate = localStorage.getItem("endDate");
-    this.selectedRegistrationDate = [startDate, endDate];
+    this.selectedRegistrationDate =  [startDate, endDate];
     this.selectedStatusUpdateDate = [
       localStorage.getItem("status_latest_datetime_from"),
       localStorage.getItem("status_latest_datetime_to"),
