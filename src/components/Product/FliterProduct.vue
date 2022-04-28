@@ -238,7 +238,7 @@ export default {
 
     handleChangeTrim(trimID) {
       this.handleSetTrim(trimID);
-      this.query.detail_model_id = trimID;
+      this.query.detail_model_id = trimID
       this.$router.push({
         path: "/admin/product",
         query: this.query,
@@ -247,25 +247,25 @@ export default {
 
     handleChangeUser(id) {
       this.handleLoadUser(id);
-      this.query.created_by = id;
+      this.query.created_by = id
       this.$router.push({ path: "/admin/product", query: this.query });
     },
 
     handleChangeLocation(id) {
-      this.handleLoadLocation(id);
+      this.handleLoadLocation(id)
       this.query.location_id = id;
       this.$router.push({ path: "/admin/product", query: this.query });
     },
 
     handleLoadProductType1(type) {
-      this.handleLoadProductType(type);
+      this.handleLoadProductType(type)
       this.query.type = type;
       this.$router.push({ path: "/admin/product", query: this.query });
     },
 
     handleLoadProductStatus1(status) {
       this.handleLoadProductStatus(status);
-      this.query.status = status;
+      this.query.status = status
       this.$router.push({
         path: "/admin/product",
         query: this.query,
@@ -274,7 +274,7 @@ export default {
 
     handleLoadStatusUpdateBy1(status_user) {
       this.handleLoadStatusUpdateBy(status_user);
-      this.query.status_user = status_user;
+      this.query.status_user = status_user
       this.$router.push({
         path: "/admin/product",
         query: this.query,
@@ -289,7 +289,7 @@ export default {
       localStorage.setItem("startDate", this.startDate);
       localStorage.setItem("endDate", this.endDate);
       this.query.start_date = this.startDate;
-      this.query.end_date = this.endDate;
+      this.query.end_date = this.endDate
       this.handleRegistrationDate(this.startDate, this.endDate);
       this.$router.push({
         path: "/admin/product",
@@ -303,7 +303,7 @@ export default {
       this.startDate = moment(date1).format("YYYY-MM-DD");
       this.endDate = moment(date2).format("YYYY-MM-DD");
       localStorage.setItem("status_latest_datetime_from", this.startDate);
-      localStorage.setItem("status_latest_datetime_to", this.endDate);
+      localStorage.setItem("status_latest_datetime_to", this.endDate)
       this.query.status_latest_datetime_from = this.startDate;
       this.query.status_latest_datetime_to = this.endDate;
       this.handleStatusDate(this.startDate, this.endDate);
@@ -323,6 +323,7 @@ export default {
       "listModelID",
       "user",
       "location",
+      "params"
     ]),
   },
 
@@ -381,17 +382,30 @@ export default {
   created() {
     const params = this.$route.query;
     this.selected = params.brand_id ? params.brand_id : "";
-    this.selectedModel = params.model_id ? params.model_id : "";
-    this.selectedTrim = params.detail_model_id ? params.detail_model_id : "";
+
+    if (this.selectedModel === params.brand_id) {
+      this.selectedModel = params.model_id;
+      this.selectedTrim = params.detail_model_id;
+    }
+
+    if (this.selectedModel === params.model_id) {
+      this.selectedTrim = params.detail_model_id;
+    }
+
     this.selectedUser = params.created_by ? params.created_by : "";
     this.selectLocation = params.location_id ? params.location_id : "";
     this.selectProductType = params.type ? params.type : "";
     this.selectProductStatus = params.sales_status ? params.sales_status : "";
-    this.selectStatusUpdateUser = params.status_latest_use ? params.status_latest_use : "";
+    this.selectStatusUpdateUser = params.status_latest_use
+      ? params.status_latest_use
+      : "";
     const startDate = localStorage.getItem("startDate");
-    const endDate = localStorage.getItem("endDate")
+    const endDate = localStorage.getItem("endDate");
     this.selectedRegistrationDate = [startDate, endDate];
-    this.selectedStatusUpdateDate = [ localStorage.getItem("status_latest_datetime_from"), localStorage.getItem("status_latest_datetime_to")];
+    this.selectedStatusUpdateDate = [
+      localStorage.getItem("status_latest_datetime_from"),
+      localStorage.getItem("status_latest_datetime_to"),
+    ];
   },
 };
 </script>

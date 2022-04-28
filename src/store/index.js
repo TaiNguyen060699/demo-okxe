@@ -167,7 +167,7 @@ export default createStore({
         }).catch(err => console.log(err))
     },
 
-    handleActivePage({ commit }, currentPage = 1) {
+    handleActivePage({ commit }, currentPage) {
       commit('isActivePage', currentPage)
     },
 
@@ -193,6 +193,7 @@ export default createStore({
       state.params.brand_id = id
       state.params.model_id = null
       state.params.detail_model_id = null
+      state.params.page = 1
 
       axios.get(`/v2/products`, { params: state.params })
         .then(res => {
@@ -205,6 +206,7 @@ export default createStore({
       commit('setID', id)
       state.params.model_id = id
       state.params.detail_model_id = null
+      state.params.page = 1
 
       axios.get(`/model-details`, { params: state.params })
         .then(res => {
@@ -217,6 +219,7 @@ export default createStore({
       // const model_id = localStorage.setItem('model_id', modelID)
       commit('setModelID', modelID)
       state.params.model_id = modelID
+      state.params.page = 1
       axios.get(`/v2/products`, { params: state.params })
         .then(res => {
           const data = res.data.data
@@ -227,6 +230,7 @@ export default createStore({
     handleSetTrim({ commit, state }, trimID) {
       commit('setTrimID', trimID)
       state.params.detail_model_id = trimID
+      state.params.page = 1
       axios.get(`/v2/products`, { params: state.params })
         .then(res => {
           const data = res.data.data
@@ -244,6 +248,7 @@ export default createStore({
 
     handleLoadUser({ commit, state }, id) {
       state.params.created_by = id
+      state.params.page = 1
       axios.get(`/v2/products`, { params: state.params })
         .then(res => {
           const data = res.data.data
@@ -261,6 +266,7 @@ export default createStore({
 
     handleLoadLocation({ commit, state }, id) {
       state.params.location_id = id
+      state.params.page = 1
       axios.get(`/v2/products`, { params: state.params })
         .then(res => {
           const data = res.data.data
@@ -270,6 +276,7 @@ export default createStore({
 
     handleLoadProductType({ commit, state }, type) {
       state.params.type = type
+      state.params.page = 1
       axios.get("/v2/products", { params: state.params })
         .then(res => {
           const data = res.data.data
@@ -279,6 +286,7 @@ export default createStore({
 
     handleLoadProductStatus({ commit, state }, status) {
       state.params.sales_status = status
+      state.params.page = 1
       axios.get("/v2/products", { params: state.params })
         .then(res => {
           const data = res.data.data
@@ -288,6 +296,7 @@ export default createStore({
 
     handleLoadStatusUpdateBy({ commit, state }, status_user) {
       state.params.status_latest_user = status_user
+      state.params.page = 1
       axios.get("/v2/products", { params: state.params })
         .then(res => {
           const data = res.data.data
@@ -298,6 +307,7 @@ export default createStore({
     handleRegistrationDate({commit, state}) {
       const start_date = localStorage.getItem('startDate')
       const end_date = localStorage.getItem('endDate')
+      state.params.page = 1
       state.params.start_date = start_date
       state.params.end_date = end_date
       axios.get("/v2/products", { params: state.params })
@@ -310,6 +320,7 @@ export default createStore({
     handleStatusDate({commit, state}) {
       const start_date = localStorage.getItem('status_latest_datetime_from')
       const end_date = localStorage.getItem('status_latest_datetime_to')
+      state.params.page = 1
       state.params.status_latest_datetime_from = start_date
       state.params.status_latest_datetime_toe = end_date
       axios.get("/v2/products", { params: state.params })

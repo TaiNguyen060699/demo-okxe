@@ -2,7 +2,7 @@
   <Paginate
     v-model="page"
     :page-count="pagess"
-    @click="onPageChange(pagess)"
+    @click="onPageChange(page)"
     :class="[page === pagess ? 'active' : '']"
   />
 </template>
@@ -18,7 +18,7 @@ export default {
 
   data() {
     return {
-      page: 1
+      page: null
     };
   },
   
@@ -29,20 +29,26 @@ export default {
   methods: {
     ...mapActions(["handleActivePage", "setParams"]),
     onPageChange() {
+      this.params.page = this.page
+      const pageParams = Object.assign(this.params)
+      for(let i in pageParams) {
+        if (pageParams[i] === null) {
+          delete pageParams[i]
+        }
+      }
       this.$emit(
         "pageChanged",
         this.handleActivePage(this.page),
-        localStorage.setItem('page', this.page),
-        this.$router.push({ path: "/admin/product", query: { page: this.page } })
+        this.$router.push({ path: "/admin/product", query: pageParams})
       );
     },
   },
 
   computed: {
-    ...mapState(["product", "totalPage"]),
+    ...mapState(["product", "totalPage", "params"]),
   },
 
-  mounted() {
+  created() {
     const params = this.$route.query;
     this.page = params.page;
     this.setParams(params)
